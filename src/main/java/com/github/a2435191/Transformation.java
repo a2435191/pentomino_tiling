@@ -2,46 +2,93 @@ package com.github.a2435191;
 
 import java.util.Arrays;
 
+
+/**
+ * Assume the axis conventions, as follows:
+ * <p>
+ * x-axis: -left, +right,
+ * <p>
+ * y-axis: -down, +up,
+ * <p>
+ * z-axis: -in,   +out.
+ * <p>
+ * <br>
+
+ * Then there is a group generated from the following matrices that represents all the
+ transformations that we can apply to pentominoes, assuming the pentominoes lie in the x-y plane:
+ * <p>
+ * r = { <p>
+ * {0, -1, 0}, <p>
+ * {1, 0, 0}, <p>
+ * {0, 0, 1} <p>
+ * } (rotate 90 degrees CW about z-axis); <p></p><br>
+
+ * s = { <p>
+ * {-1, 0, 0}, <p>
+ * {0, 1, 0}, <p>
+ * {0, 0, -1} <p>
+ * } (rotate 180 degrees about y-axis / reflect vertically); <p><br>
+
+ * and t = { <p>
+ * {1, 0, 0}, <p>
+ * {0, -1, 0}, <p>
+ * {0, 0, -1} <p>
+ * } (rotate 180 degrees about x-axis / reflect horizontally). <p><br>
+
+ * Additionally, the relations r^4 = s^2 = t^2 = 1, rs = sr^3, rt = tr^3 = sr, and st = ts = r^2 hold. Computation shows that
+ this group has eight elements: 1, r, r^2, r^3, s, t, rs, rt.
+
+ * This interface and its subclasses provide access to these transformations.
+ **/
+@FunctionalInterface
 public interface Transformation {
-    /*
-    Assume the axis conventions, as follows:
-    x-axis: -left, +right,
-    y-axis: -down, +up,
-    z-axis: -in,   +out.
-    
-    Then there is a group generated from the following matrices that represents all the
-    transformations that we can apply to pentominoes, assuming the pentominoes lie in the x-y plane:
-    r = {
-        {0, -1, 0},
-        {1, 0, 0},
-        {0, 0, 1}
-    } (rotate 90 degrees CW about z-axis);
 
-    s = {
-        {-1, 0, 0},
-        {0, 1, 0},
-        {0, 0, -1}
-    } (rotate 180 degrees about y-axis / reflect vertically);
 
-    and t = {
-        {1, 0, 0},
-        {0, -1, 0},
-        {0, 0, -1}
-    } (rotate 180 degrees about x-axis / reflect horizontally).
-
-    Additionally, the relations r^4 = s^2 = t^2 = 1, rs = sr^3, rt = tr^3 = sr, and st = ts = r^2 hold. Computation shows that
-    this group has eight elements: 1, r, r^2, r^3, s, t, rs, rt.
+    /**
+     * The identity transformation. Just a (deep) copy operation.
      */
-
     Transformation IDENTITY = new Identity();
+
+    /**
+     * Counter-clockwise rotation by 90 degrees.
+     */
     Transformation R = new R();
+
+    /**
+     * Rotation by 180 degrees.
+     */
     Transformation R2 = new R2();
+
+    /**
+     * Clockwise rotation by 90 degrees.
+     */
     Transformation R3 = new R3();
+
+
+
+    /**
+     * Reflection about the y-axis.
+     */
     Transformation S = new S();
+
+    /**
+     * Reflection about the x-axis.
+     */
     Transformation T = new T();
+
+    /**
+     * Reflection about the y-axis, then counter-clockwise rotation by 90 degrees.
+     */
     Transformation RS = new RS();
+
+    /**
+     * Reflection about the x-axis, then counter-clockwise rotation by 90 degrees.
+     */
     Transformation RT = new RT();
 
+    /**
+     * All transform instances in the class.
+     */
     Transformation[] TRANSFORMS = {
             IDENTITY,
             R,
@@ -99,7 +146,7 @@ public interface Transformation {
     private static boolean[][] rotate(boolean[][] shape, int rotations) {
         return switch (rotations) {
             case 0 -> deepCopy(shape);
-            case 1 -> { // only use case 1, but other three are still here just in case
+            case 1 -> {
                 int oldHeight = shape.length;
                 int oldWidth = shape[0].length;
                 boolean[][] out = new boolean[oldWidth][];
@@ -150,8 +197,16 @@ public interface Transformation {
         };
     }
 
+    /**
+     * Apply the transformation.
+     * @param shape Boolean matrix representing some shape.
+     * @return A new matrix representing the transformed shape.
+     */
     boolean[][] apply(boolean[][] shape);
 
+    /**
+     * Helpful for pretty-printing.
+     */
     class SimpleStringRepresentation {
         @Override
         public String toString() {
@@ -159,6 +214,9 @@ public interface Transformation {
         }
     }
 
+    /**
+     * The identity transformation. Just a (deep) copy operation.
+     */
     final class Identity extends SimpleStringRepresentation implements Transformation {
         @Override
         public boolean[][] apply(boolean[][] shape) {
@@ -166,6 +224,9 @@ public interface Transformation {
         }
     }
 
+    /**
+     * Counter-clockwise rotation by 90 degrees.
+     */
     final class R extends SimpleStringRepresentation implements Transformation {
         @Override
         public boolean[][] apply(boolean[][] shape) {
@@ -173,6 +234,9 @@ public interface Transformation {
         }
     }
 
+    /**
+     * Rotation by 180 degrees.
+     */
     final class R2 extends SimpleStringRepresentation implements Transformation {
         @Override
         public boolean[][] apply(boolean[][] shape) {
@@ -180,6 +244,9 @@ public interface Transformation {
         }
     }
 
+    /**
+     * Clockwise rotation by 90 degrees.
+     */
     final class R3 extends SimpleStringRepresentation implements Transformation {
         @Override
         public boolean[][] apply(boolean[][] shape) {
@@ -187,6 +254,9 @@ public interface Transformation {
         }
     }
 
+    /**
+     * Reflection about the y-axis.
+     */
     final class S extends SimpleStringRepresentation implements Transformation {
         @Override
         public boolean[][] apply(boolean[][] shape) {
@@ -194,6 +264,9 @@ public interface Transformation {
         }
     }
 
+    /**
+     * Reflection about the x-axis.
+     */
     final class T extends SimpleStringRepresentation implements Transformation {
         @Override
         public boolean[][] apply(boolean[][] shape) {
@@ -201,6 +274,9 @@ public interface Transformation {
         }
     }
 
+    /**
+     * Reflection about the y-axis, then counter-clockwise rotation by 90 degrees.
+     */
     final class RS extends SimpleStringRepresentation implements Transformation {
         @Override
         public boolean[][] apply(boolean[][] shape) {
@@ -208,6 +284,9 @@ public interface Transformation {
         }
     }
 
+    /**
+     * Reflection about the x-axis, then counter-clockwise rotation by 90 degrees.
+     */
     final class RT extends SimpleStringRepresentation implements Transformation {
         @Override
         public boolean[][] apply(boolean[][] shape) {

@@ -1,12 +1,14 @@
 package com.github.a2435191;
 
-import com.github.a2435191.solvers.PentominoPuzzleSolver;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public record Solution(Map<Pentomino, PentominoPuzzleSolver.TransformationAndCoordinate> data) {
+/**
+ * Wrapper record for puzzle solutions.
+ * @param data A {@link Map} from each pentomino used in the solution to its affine transformation.
+ */
+public record Solution(Map<Pentomino, TransformationAndCoordinate> data) {
     public @Override String toString() {
         if (this.data == null) {
             return "null";

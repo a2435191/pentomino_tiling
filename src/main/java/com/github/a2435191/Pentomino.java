@@ -1,5 +1,7 @@
 package com.github.a2435191;
 
+import com.github.a2435191.solvers.PentominoPuzzleSolver;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -22,15 +24,48 @@ public enum Pentomino {
     private static final char REPR_TRUE = '-';
     private static final char REPR_FALSE = '0';
 
-    // true— filled, false— empty
+    /**
+     * Boolean matrix representing the shape of the pentomino. As usual, {@code false} represents empty space and
+     * {@code true} represents a filled square.
+     */
     public final boolean[][] shape;
+
+    /**
+     * The width of the bounding box of the pentomino.
+     */
     public final int width;
+
+    /**
+     * The height of the bounding box of the pentomino.
+     */
     public final int height;
+
+    /**
+     * The area of the pentomino (not its bounding box).
+     */
     public final int area;
 
+    /**
+     * The transformations that have the same effect on a pentomino are computed ahead of time, to avoid
+     * blowing up the search tree. The keys of the map are the images of each transformation,
+     * and the values the corresponding transformation(s).
+     */
     public final Map<boolean[][], Transformation[]> equivalentTransforms;
+
+    /**
+     * Also computed ahead of time is the first (moving left-right then top-down) filled-in square
+     * of a particular rotation. This is because pentominos are placed relative to their
+     * upper-leftmost square (0, 0), but sometimes this square is empty. When searching for empty grid squares,
+     * this correction must be applied.
+     * @see PentominoPuzzleSolver#determineFirstEmptySquare(Pentomino, boolean[][], boolean[][])
+     * PentominoPuzzleSolver::determineFirstEmptySquare
+     */
     public final Map<boolean[][], Coordinate> startingOffsets;
 
+    /**
+     * Create an un-rotated pentomino from a string.
+     * @param shape String that concisely describes the pentomino's shape.
+     */
     Pentomino(String shape) {
         String[] split = shape.split(REPR_DELIMITER);
         this.height = split.length;
@@ -90,23 +125,8 @@ public enum Pentomino {
 
     @Override
     public String toString() {
-        // return toString(this.shape);
         return this.name();
     }
-
-
-//    public static String toString(boolean[][] shape) {
-//        int height = shape.length;
-//        String[] rows = new String[height];
-//        for (int i = 0; i < height; i++) {
-//            StringBuilder sb = new StringBuilder();
-//            for (boolean b : shape[i]) {
-//                sb.append(b ? REPR_TRUE : REPR_FALSE);
-//            }
-//            rows[i] = sb.toString();
-//        }
-//        return String.join(REPR_DELIMITER, rows);
-//    }
 
     // for comparison
     record Boolean2DArrayWrapper(boolean[][] array) {

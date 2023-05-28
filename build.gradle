@@ -17,7 +17,7 @@ dependencies {
 }
 
 application {
-    mainClassName = 'com.github.a2435191.Main'
+    mainClassName = 'com.github.a2435191.Main' // 'com.github.a2435191.display.Main' for Swing
 }
 
 test {

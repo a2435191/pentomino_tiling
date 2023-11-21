@@ -14,7 +14,7 @@ import java.util.Arrays;
  * <p>
  * <br>
 
- * Then there is a group generated from the following matrices that represents all the
+ * Then the dihedral group D8 generated from the following matrices represents all the
  transformations that we can apply to pentominoes, assuming the pentominoes lie in the x-y plane:
  * <p>
  * r = { <p>
@@ -35,8 +35,7 @@ import java.util.Arrays;
  * {0, 0, -1} <p>
  * } (rotate 180 degrees about x-axis / reflect horizontally). <p><br>
 
- * Additionally, the relations r^4 = s^2 = t^2 = 1, rs = sr^3, rt = tr^3 = sr, and st = ts = r^2 hold. Computation shows that
- this group has eight elements: 1, r, r^2, r^3, s, t, rs, rt.
+ * This group has eight elements: 1, r, r^2, r^3, s, t, rs, rt.
 
  * This interface and its subclasses provide access to these transformations.
  **/
